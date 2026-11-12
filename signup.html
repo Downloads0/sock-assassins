@@ -7,7 +7,16 @@
     <title>Sock Assassins</title>
 </head>
 <body>
-    <a href="index.html">Home page</a>
+    <nav>
+        <a href="./">Home</a>
+        <a href="signup.html">Sign up</a>
+        <a href="login.html">Log in</a>
+        <a href="target.html">My Target</a>
+        <span id="user-status">Checking…</span>
+    </nav>
+
+    <h1>Sign Up</h1>
+
     <form id="signup-form">
         <label for="name">First and Last Name</label>
         <input type="text" id="name" required>
@@ -20,5 +29,8 @@
 
         <button type="submit">Create account</button>
     </form>
+
+    <script type="module" src="signup.js"></script>
+    <script type="module" src="nav.js"></script>
 </body>
 </html>

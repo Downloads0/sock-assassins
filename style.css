@@ -3,3 +3,16 @@ body {
   max-width: 600px;
   margin: 0 auto;
 }
+
+nav {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+#user-status {
+  margin-left: auto;   /* pushes the status to the right side */
+  font-size: 0.9em;
+}
