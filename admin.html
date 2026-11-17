@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <a href="./">Home</a>
+        <a href="signup.html">Sign up</a>
+        <a href="login.html">Log in</a>
+        <a href="target.html">My Target</a>
+        <span id="user-status">Checking…</span>
+        <form id="logout-form">
+            <button type="submit">Log out</button>
+        </form>
+    </nav>
+
+    <main id="admin-content" style="display: none;">
+        <h1>Game Master</h1>
+        <button id="start-btn">Start game</button>
+        <p id="admin-message"></p>
+    </main>
+
+    <script type="module" src="nav.js"></script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
