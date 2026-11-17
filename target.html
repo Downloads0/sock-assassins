@@ -19,10 +19,20 @@
         </form>
     </nav>
 
-    <h1>My Target</h1>
+    <main>
+        <h1>Targets</h1>
+    </main>
+
 
     <main id="target-content" style="display: none;">
-        <h2>Target Information</h2>
+        <h1>🎯 Your target</h1>
+        <h2 id="target-name">Loading…</h2>
+        <p id="target-message"></p>
+        <form id="claim-form" style="display: none;">
+            <label for="video-link">Video link (share it with the game master only)</label>
+            <input type="url" id="video-link" required>
+            <button type="submit">Report elimination</button>
+        </form>
     </main>
 
     <script type="module" src="target.js"></script>

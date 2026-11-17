@@ -17,3 +17,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const SEASON = "2026-27";
+export const ADMIN_EMAIL = "dwang27@ucc.on.ca";

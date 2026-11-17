@@ -1,4 +1,4 @@
-import { auth, db, SEASON } from "./firebase.js";
+import { auth, db, SEASON, ADMIN_EMAIL } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
@@ -11,8 +11,10 @@ onAuthStateChanged(auth, async (user) => {
 
     if (snap.exists()) {
       status.textContent = `Logged in as ${snap.data().name}`;
+    } else if (user.email === ADMIN_EMAIL) {
+      status.textContent = "Logged in as Game Master";
     } else {
-      status.textContent = `Logged in as ${user.email}`;   // no player doc yet
+      status.textContent = `Logged in as ${user.email}`;
     }
   } else {
     status.textContent = "Not logged in";
