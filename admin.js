@@ -1,6 +1,6 @@
 import { auth, db, SEASON, ADMIN_EMAIL } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
-import { collection, getDocs, getDoc, doc, writeBatch, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+import { collection, getDocs, getDoc, doc, writeBatch, query, where, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
 const message = document.getElementById("admin-message");
 
@@ -37,6 +37,10 @@ async function eliminatePlayer(victimId, victimName) {
 
     // 3. Remove the victim
     batch.update(victimRef, { alive: false, targetId: null });
+
+    batch.set(doc(db, "seasons", SEASON),
+      { alive: arrayRemove(victimName) },
+      { merge: true });
 
     // 4. Winner check: does the hunter now target themselves?
     if (victim.targetId === hunterDoc.id) {
@@ -140,6 +144,34 @@ async function approveClaim(claimRef, claim, names) {
   }
 }
 
+async function addLatePlayer(newId, newName) {
+  if (!confirm(`Add ${newName} to the game?`)) return;
+
+  try {
+    const snap = await getDocs(collection(db, "seasons", SEASON, "players"));
+    const inGame = snap.docs.filter((d) => d.data().alive && d.data().targetId);
+
+    if (inGame.length === 0) {
+      message.textContent = "Start the game first.";
+      return;
+    }
+
+    // Pick a random player to insert the newcomer after
+    const host = inGame[Math.floor(Math.random() * inGame.length)];
+
+    const batch = writeBatch(db);
+    batch.update(doc(db, "seasons", SEASON, "players", newId), { targetId: host.data().targetId });
+    batch.update(host.ref, { targetId: newId });
+    batch.set(doc(db, "seasons", SEASON), { alive: arrayUnion(newName) }, { merge: true });
+    await batch.commit();
+
+    message.textContent = `${newName} has joined the game.`;
+    loadPlayers();
+  } catch (error) {
+    message.textContent = error.message;
+  }
+}
+
 // Only show the page to you
 onAuthStateChanged(auth, (user) => {
     if (!user || user.email !== ADMIN_EMAIL) {
@@ -180,7 +212,14 @@ document.getElementById("start-btn").addEventListener("click", async () => {
             batch.update(doc(db, "seasons", SEASON, "players", hunter), { targetId: target, alive: true });;
         }
 
-        batch.set(doc(db, "seasons", SEASON), { status: "active" }, { merge: true });
+        const aliveNames = snap.docs
+          .filter((d) => d.data().email !== ADMIN_EMAIL)
+          .map((d) => d.data().name)
+          .sort();
+        
+        batch.set(doc(db, "seasons", SEASON),
+          { status: "active", alive: aliveNames, winner: null },
+          { merge: true });
 
         await batch.commit();
         loadPlayers();

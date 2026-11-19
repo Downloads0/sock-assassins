@@ -68,3 +68,5 @@ onAuthStateChanged(auth, async (user) => {                     // NEW: async
       }
     });
 });
+
+messageEl.textContent = "Waiting for the game master to add you to the game.";
