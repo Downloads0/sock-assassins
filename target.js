@@ -24,6 +24,8 @@ onAuthStateChanged(auth, async (user) => {                     // NEW: async
 
     const me = mySnap.data();
 
+    document.getElementById("hearts").textContent = "❤️".repeat(me.lives ?? 2);
+
     // 2. Handle the special cases first
     if (me.alive === false) {
         nameEl.textContent = "☠️ Eliminated";
@@ -32,8 +34,8 @@ onAuthStateChanged(auth, async (user) => {                     // NEW: async
     }
 
     if (me.targetId === null) {
-        nameEl.textContent = "Not started yet";
-        messageEl.textContent = "The game master hasn't started the game.";
+        nameEl.textContent = "No target right now";
+        messageEl.textContent = "You'll get a new target at the weekly shuffle.";
         return;
     }
 
@@ -62,7 +64,7 @@ onAuthStateChanged(auth, async (user) => {                     // NEW: async
           createdAt: serverTimestamp()
         });
         form.style.display = "none";
-        messageEl.textContent = "Claim sent! Waiting for the game master. ⏳";
+        messageEl.textContent = "Claim sent! Waiting for the game master.";
       } catch (error) {
         messageEl.textContent = error.message;
       }
