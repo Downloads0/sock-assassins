@@ -24,7 +24,7 @@ onAuthStateChanged(auth, async (user) => {                     // NEW: async
 
     const me = mySnap.data();
 
-    document.getElementById("hearts").textContent = "❤️".repeat(me.lives ?? 2);
+      document.getElementById("hearts").textContent = `${"❤️".repeat(me.lives ?? 2)} · 🗡️ ${me.kills ?? 0} kills`;
 
     // 2. Handle the special cases first
     if (me.alive === false) {

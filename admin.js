@@ -1,6 +1,6 @@
 import { auth, db, SEASON, ADMIN_EMAIL } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-auth.js";
-import { collection, getDocs, getDoc, doc, writeBatch, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+import { collection, getDocs, getDoc, doc, writeBatch, query, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
 const message = document.getElementById("admin-message");
 const seasonRef = doc(db, "seasons", SEASON);
@@ -50,7 +50,8 @@ async function startGame() {
         targetId: next.id,
         alive: true,
         lives: STARTING_LIVES,
-        killedThisWeek: false
+        killedThisWeek: false,
+        kills: 0
       });
     });
 
@@ -114,7 +115,7 @@ async function eliminatePlayer(victimId, victimName) {
       hunterTarget = victim.targetId; // hunter moves on to the victim's target
     }
 
-    batch.update(hunterDoc.ref, { targetId: hunterTarget, killedThisWeek: true });
+    batch.update(hunterDoc.ref, { targetId: hunterTarget, killedThisWeek: true, kills: increment(1) });
 
     await batch.commit();
 
@@ -150,7 +151,7 @@ async function weeklyShuffle() {
       message.textContent = `There are ${pending.size} claims still waiting. Approve or reject them first.`;
       return;
     }
-    
+
     const seasonSnap = await getDoc(seasonRef);
     if (seasonSnap.exists() && seasonSnap.data().status === "finished") {
       message.textContent = "The game is already over.";
@@ -264,7 +265,7 @@ async function loadPlayers() {
     const tagged = p.killedThisWeek ? " · ✅ tagged this week" : "";
 
     const li = document.createElement("li");
-    li.textContent = `${p.name} ${hearts} · ${status}${tagged} `;
+    li.textContent = `${p.name} ${hearts} · 🗡️ ${p.kills ?? 0} · ${status}${tagged} `;
 
     if (hunterName && p.targetId !== d.id) {
       const btn = document.createElement("button");
